@@ -59,6 +59,29 @@
   .float-cta a:focus-visible{ outline:2px solid var(--cream); outline-offset:3px; }
   @media (max-width:600px){ .float-cta{ top:14px; right:14px; } .float-cta a{ padding:9px 16px; font-size:0.66rem; } }
 
+  /* ---------- MUSIC TOGGLE ---------- */
+  .music-toggle{
+    position:fixed; bottom:22px; right:22px; z-index:100;
+    width:48px; height:48px; border-radius:50%;
+    background:rgba(11,43,30,0.85); border:1px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; backdrop-filter:blur(4px);
+    transition:background .25s ease, transform .25s ease;
+  }
+  .music-toggle:hover{ background:var(--green-700); transform:translateY(-2px); }
+  .music-toggle svg{ width:20px; height:20px; fill:var(--gold-light); }
+  .music-toggle .bars{ display:flex; align-items:flex-end; gap:2px; height:16px; }
+  .music-toggle .bars span{
+    display:block; width:3px; background:var(--gold-light); border-radius:1px;
+    animation: bar 0.9s ease-in-out infinite;
+  }
+  .music-toggle .bars span:nth-child(1){ height:6px; animation-delay:0s; }
+  .music-toggle .bars span:nth-child(2){ height:14px; animation-delay:.15s; }
+  .music-toggle .bars span:nth-child(3){ height:9px; animation-delay:.3s; }
+  .music-toggle.paused .bars span{ animation-play-state:paused; height:5px !important; }
+  @keyframes bar{ 0%,100%{ height:5px; } 50%{ height:16px; } }
+  @media (prefers-reduced-motion: reduce){ .music-toggle .bars span{ animation:none; } }
+
   /* ---------- HERO ---------- */
   .hero{
     position:relative;
@@ -280,6 +303,12 @@
   }
 
   .register-actions{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+  .btn-whatsapp{
+    background:transparent; border:1px solid #3FAE5C; color:#B7E8C4;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn-whatsapp svg{ width:16px; height:16px; fill:#3FAE5C; flex-shrink:0; }
+  .btn-whatsapp:hover{ border-color:#3FAE5C; background:rgba(63,174,92,0.1); color:#fff; }
 
   footer{
     border-top:1px solid var(--rule);
@@ -377,7 +406,7 @@
 </head>
 <body>
 
-<div class="float-cta"><a href="#register">Register</a></div>
+<div class="float-cta"><a href="https://forms.gle/2vsT9jYSj2UD2hEYA" target="_blank" rel="noopener">Register</a></div>
 
 <header class="hero">
   <div class="hero-inner">
@@ -397,7 +426,7 @@
     <div class="tagline-pill tracked">The Business Game Changer</div>
 
     <div class="hero-cta">
-      <a class="btn btn-primary" href="#register">Reserve Your Seat</a>
+      <a class="btn btn-primary" href="https://forms.gle/2vsT9jYSj2UD2hEYA" target="_blank" rel="noopener">Reserve Your Seat</a>
     </div>
   </div>
 </header>
@@ -608,7 +637,11 @@
   <div class="qr-caption reveal">Scan to Register</div>
 
   <div class="register-actions reveal">
-    <a class="btn btn-primary" href="#">Register via Link</a>
+    <a class="btn btn-primary" href="https://forms.gle/2vsT9jYSj2UD2hEYA" target="_blank" rel="noopener">Register via Link</a>
+    <a class="btn btn-whatsapp" href="https://chat.whatsapp.com/CF47dVYbPBU6wanFueW43d" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.5 14.4c-.3-.1-1.7-.9-2-1-.3-.1-.5-.1-.6.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5.1-.1.2-.3.2-.4.1-.2 0-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.5-.6-.5h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3 4.8 4.3 2.8 1.2 2.8.8 3.3.8.5 0 1.6-.6 1.9-1.3.2-.6.2-1.1.2-1.2-.1-.2-.3-.2-.6-.4z"/><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+      Join the WhatsApp Group
+    </a>
   </div>
 </section>
 
@@ -638,5 +671,27 @@
   revealEls.forEach(el=>io.observe(el));
 </script>
 
+<audio id="bgm" src="theme.mp3" loop preload="none"></audio>
+<button class="music-toggle paused" id="musicToggle" aria-label="Play background music" aria-pressed="false">
+  <div class="bars"><span></span><span></span><span></span></div>
+</button>
+
+<script>
+  const bgm = document.getElementById('bgm');
+  const toggle = document.getElementById('musicToggle');
+  toggle.addEventListener('click', () => {
+    if (bgm.paused) {
+      bgm.play().catch(() => {});
+      toggle.classList.remove('paused');
+      toggle.setAttribute('aria-pressed', 'true');
+      toggle.setAttribute('aria-label', 'Pause background music');
+    } else {
+      bgm.pause();
+      toggle.classList.add('paused');
+      toggle.setAttribute('aria-pressed', 'false');
+      toggle.setAttribute('aria-label', 'Play background music');
+    }
+  });
+</script>
 </body>
 </html>
